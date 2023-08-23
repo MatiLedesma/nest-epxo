@@ -4,5 +4,5 @@ export const configuration = {
         password: process.env.DB_PASSWORD || "root",
         schema: process.env.DB_TABLE || "nest"
     },
-    secret: "hTFI4cbrc0KncvHr"
+    secret: process.env.SECRET || "hTFI4cbrc0KncvHr"
 };

@@ -10,6 +10,8 @@ import { AuthService } from './domain/ports/auth/auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { configuration } from './config/global/configuration';
+import { PassportModule } from '@nestjs/passport'
+import { JwtStrategy } from './config/jwt/jwt.strategy';
 
 @Module({
   imports: [
@@ -28,9 +30,10 @@ import { configuration } from './config/global/configuration';
       secret: configuration.secret,
       signOptions: { expiresIn: '1h' },
     }),
-    ConfigModule.forRoot({ envFilePath: ".env" })
+    ConfigModule.forRoot({ envFilePath: ".env" }),
+    PassportModule
   ],
   controllers: [AppController, UserController, AuthController],
-  providers: [AppService, UserService, AuthService],
+  providers: [AppService, UserService, AuthService, JwtStrategy],
 })
 export class AppModule { }
