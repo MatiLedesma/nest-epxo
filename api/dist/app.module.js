@@ -25,7 +25,7 @@ exports.AppModule = AppModule = __decorate([
                 port: 3306,
                 username: 'root',
                 password: 'root',
-                database: 'test',
+                database: 'nest',
                 entities: [__dirname + "/domain/model/**/*.entity{.ts,.js}"],
                 synchronize: true,
             }), typeorm_1.TypeOrmModule.forFeature([user_entity_1.User])

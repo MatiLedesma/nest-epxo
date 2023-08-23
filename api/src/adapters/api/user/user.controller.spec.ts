@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
-import { UserService } from 'src/domain/ports/user/user.service';
-import { User } from 'src/domain/model/user/user.entity';
+import { UserService } from '../../../domain/ports/user/user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from '../../../domain/model/user/user.entity';
 
 describe('UserController', () => {
   let controller: UserController;
-
+  let service: UserService;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserController],
@@ -25,6 +25,7 @@ describe('UserController', () => {
       ]
     }).compile();
 
+    service = module.get<UserService>(UserService);
     controller = module.get<UserController>(UserController);
   });
 
