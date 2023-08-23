@@ -26,10 +26,10 @@ describe('UserController', () => {
           password: 'root',
           database: 'nest',
           entities: [User],
-          synchronize: true
+          synchronize: true,
         }),
-        TypeOrmModule.forFeature([User])
-      ]
+        TypeOrmModule.forFeature([User]),
+      ],
     }).compile();
 
     service = module.get<UserService>(UserService);
@@ -43,7 +43,7 @@ describe('UserController', () => {
     expect(service).toBeDefined();
   });
 
-  it("GET `/user` should return 200", () => {
+  it('GET `/user` should return 200', () => {
     return request(app.getHttpServer())
       .get('/user')
       .expect(200)

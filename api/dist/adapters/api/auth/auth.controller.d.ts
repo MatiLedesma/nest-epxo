@@ -1,5 +1,5 @@
 import { AuthService } from 'src/domain/ports/auth/auth.service';
-import { AuthRequestDto } from './dto/AuthRequestDto';
+import { AuthRequestDto } from './dto/auth.request.dto';
 export declare class AuthController {
     private readonly authService;
     constructor(authService: AuthService);

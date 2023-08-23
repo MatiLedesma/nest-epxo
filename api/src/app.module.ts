@@ -10,7 +10,7 @@ import { AuthService } from './domain/ports/auth/auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { configuration } from './config/global/configuration';
-import { PassportModule } from '@nestjs/passport'
+import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './config/jwt/jwt.strategy';
 
 @Module({
@@ -25,15 +25,16 @@ import { JwtStrategy } from './config/jwt/jwt.strategy';
       autoLoadEntities: true,
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([User]), JwtModule.register({
+    TypeOrmModule.forFeature([User]),
+    JwtModule.register({
       global: true,
       secret: configuration.secret,
       signOptions: { expiresIn: '1h' },
     }),
-    ConfigModule.forRoot({ envFilePath: ".env" }),
-    PassportModule
+    ConfigModule.forRoot({ envFilePath: '.env' }),
+    PassportModule,
   ],
   controllers: [AppController, UserController, AuthController],
   providers: [AppService, UserService, AuthService, JwtStrategy],
 })
-export class AppModule { }
+export class AppModule {}

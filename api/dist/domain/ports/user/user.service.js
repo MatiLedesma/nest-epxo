@@ -32,13 +32,15 @@ let UserService = exports.UserService = class UserService {
     }
     async authUser(username, password) {
         try {
-            const response = await this.userRepository.findOne({ where: { email: username, password: password } });
+            const response = await this.userRepository.findOne({
+                where: { email: username, password: password },
+            });
             delete response.password;
             const responseDto = response;
             return responseDto;
         }
         catch (e) {
-            throw new common_1.HttpException('email or password are invalid', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new common_1.HttpException('Invalid credentials', common_1.HttpStatus.UNAUTHORIZED);
         }
     }
     async getById(id) {
@@ -49,7 +51,7 @@ let UserService = exports.UserService = class UserService {
             return responseDto;
         }
         catch (e) {
-            throw new common_1.HttpException('Cannot get the requested id', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new common_1.HttpException('Cannot get the requested id', common_1.HttpStatus.NOT_FOUND);
         }
     }
     async create(user) {
@@ -62,7 +64,7 @@ let UserService = exports.UserService = class UserService {
         const result = await this.userRepository.delete(id);
         if (result.affected === 0)
             throw new common_1.HttpException('The id does not exist', common_1.HttpStatus.NOT_FOUND);
-        return 'Successfully deleted with id: ' + id;
+        return `Successfully deleted id: ${id}`;
     }
 };
 exports.UserService = UserService = __decorate([

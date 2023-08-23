@@ -36,13 +36,14 @@ exports.AppModule = AppModule = __decorate([
                 autoLoadEntities: true,
                 synchronize: true,
             }),
-            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]), jwt_1.JwtModule.register({
+            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]),
+            jwt_1.JwtModule.register({
                 global: true,
                 secret: configuration_1.configuration.secret,
                 signOptions: { expiresIn: '1h' },
             }),
-            config_1.ConfigModule.forRoot({ envFilePath: ".env" }),
-            passport_1.PassportModule
+            config_1.ConfigModule.forRoot({ envFilePath: '.env' }),
+            passport_1.PassportModule,
         ],
         controllers: [app_controller_1.AppController, user_controller_1.UserController, auth_controller_1.AuthController],
         providers: [app_service_1.AppService, user_service_1.UserService, auth_service_1.AuthService, jwt_strategy_1.JwtStrategy],

@@ -21,11 +21,14 @@ let AuthService = exports.AuthService = class AuthService {
     async singIn(username, password) {
         const user = await this.userService.authUser(username, password);
         if (!user)
-            return;
-        const payload = { id: user.id, name: user.name, lastname: user.lastname, email: user.email };
-        return {
-            access_token: await this.jwtService.signAsync(payload)
+            throw new common_1.UnauthorizedException();
+        const payload = {
+            id: user.id,
+            name: user.name,
+            lastname: user.lastname,
+            email: user.email,
         };
+        return { access_token: await this.jwtService.signAsync(payload) };
     }
 };
 exports.AuthService = AuthService = __decorate([
