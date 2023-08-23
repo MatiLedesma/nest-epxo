@@ -24,33 +24,45 @@ let UserService = exports.UserService = class UserService {
     async getAll() {
         const responseDto = [];
         const response = await this.userRepository.find();
-        response.map((r, i) => { delete r.password; responseDto[i] = r; });
+        response.map((r, i) => {
+            delete r.password;
+            responseDto[i] = r;
+        });
         return responseDto;
     }
-    async getById(id) {
+    async authUser(username, password) {
         try {
-            var responseDto;
-            const response = await this.userRepository.findOneBy({ id });
+            const response = await this.userRepository.findOne({ where: { email: username, password: password } });
             delete response.password;
-            responseDto = response;
+            const responseDto = response;
             return responseDto;
         }
         catch (e) {
-            throw new common_1.HttpException("Cannot get the requested id", common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new common_1.HttpException('email or password are invalid', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    async getById(id) {
+        try {
+            const response = await this.userRepository.findOneBy({ id });
+            delete response.password;
+            const responseDto = response;
+            return responseDto;
+        }
+        catch (e) {
+            throw new common_1.HttpException('Cannot get the requested id', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     async create(user) {
-        var responseDto;
         const response = await this.userRepository.save(user);
         delete response.password;
-        responseDto = response;
+        const responseDto = response;
         return responseDto;
     }
     async delete(id) {
         const result = await this.userRepository.delete(id);
         if (result.affected === 0)
-            throw new common_1.HttpException("The id does not exist", common_1.HttpStatus.NOT_FOUND);
-        return "Successfully deleted with id: " + id;
+            throw new common_1.HttpException('The id does not exist', common_1.HttpStatus.NOT_FOUND);
+        return 'Successfully deleted with id: ' + id;
     }
 };
 exports.UserService = UserService = __decorate([

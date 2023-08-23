@@ -6,6 +6,7 @@ export declare class UserService {
     private userRepository;
     constructor(userRepository: Repository<User>);
     getAll(): Promise<UserResponseDto[]>;
+    authUser(username: string, password: string): Promise<UserResponseDto>;
     getById(id: number): Promise<UserResponseDto>;
     create(user: UserRequestDto): Promise<UserResponseDto>;
     delete(id: number): Promise<string>;

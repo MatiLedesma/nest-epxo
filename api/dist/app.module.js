@@ -14,6 +14,11 @@ const user_controller_1 = require("./adapters/api/user/user.controller");
 const user_service_1 = require("./domain/ports/user/user.service");
 const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("./domain/model/user/user.entity");
+const auth_controller_1 = require("./adapters/api/auth/auth.controller");
+const auth_service_1 = require("./domain/ports/auth/auth.service");
+const jwt_1 = require("@nestjs/jwt");
+const config_1 = require("@nestjs/config");
+const configuration_1 = require("./config/global/configuration");
 let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = __decorate([
@@ -23,15 +28,21 @@ exports.AppModule = AppModule = __decorate([
                 type: 'mysql',
                 host: 'localhost',
                 port: 3306,
-                username: 'root',
-                password: 'root',
-                database: 'nest',
-                entities: [__dirname + "/domain/model/**/*.entity{.ts,.js}"],
+                username: configuration_1.configuration.database.name,
+                password: configuration_1.configuration.database.password,
+                database: configuration_1.configuration.database.schema,
+                autoLoadEntities: true,
                 synchronize: true,
-            }), typeorm_1.TypeOrmModule.forFeature([user_entity_1.User])
+            }),
+            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]), jwt_1.JwtModule.register({
+                global: true,
+                secret: configuration_1.configuration.secret,
+                signOptions: { expiresIn: '1h' },
+            }),
+            config_1.ConfigModule.forRoot({ envFilePath: ".env" })
         ],
-        controllers: [app_controller_1.AppController, user_controller_1.UserController],
-        providers: [app_service_1.AppService, user_service_1.UserService],
+        controllers: [app_controller_1.AppController, user_controller_1.UserController, auth_controller_1.AuthController],
+        providers: [app_service_1.AppService, user_service_1.UserService, auth_service_1.AuthService],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

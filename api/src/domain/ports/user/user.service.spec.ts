@@ -17,7 +17,7 @@ describe('UserService', () => {
           username: 'root',
           password: 'root',
           database: 'nest',
-          entities: [__dirname + '/domain/model/**/*.entity{.ts,.js}'],
+          entities: [User],
           synchronize: true,
         }),
         TypeOrmModule.forFeature([User]),

@@ -5,6 +5,11 @@ import { UserController } from './adapters/api/user/user.controller';
 import { UserService } from './domain/ports/user/user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './domain/model/user/user.entity';
+import { AuthController } from './adapters/api/auth/auth.controller';
+import { AuthService } from './domain/ports/auth/auth.service';
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule } from '@nestjs/config';
+import { configuration } from './config/global/configuration';
 
 @Module({
   imports: [
@@ -12,15 +17,20 @@ import { User } from './domain/model/user/user.entity';
       type: 'mysql',
       host: 'localhost',
       port: 3306,
-      username: 'root',
-      password: 'root',
-      database: 'nest',
-      entities: [__dirname + '/domain/model/**/*.entity{.ts,.js}'],
+      username: configuration.database.name,
+      password: configuration.database.password,
+      database: configuration.database.schema,
+      autoLoadEntities: true,
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User]), JwtModule.register({
+      global: true,
+      secret: configuration.secret,
+      signOptions: { expiresIn: '1h' },
+    }),
+    ConfigModule.forRoot({ envFilePath: ".env" })
   ],
-  controllers: [AppController, UserController],
-  providers: [AppService, UserService],
+  controllers: [AppController, UserController, AuthController],
+  providers: [AppService, UserService, AuthService],
 })
-export class AppModule {}
+export class AppModule { }

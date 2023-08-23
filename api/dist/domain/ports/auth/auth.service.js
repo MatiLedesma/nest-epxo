@@ -9,25 +9,28 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AppController = void 0;
+exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
-const app_service_1 = require("./app.service");
-let AppController = exports.AppController = class AppController {
-    constructor(appService) {
-        this.appService = appService;
+const user_service_1 = require("../user/user.service");
+const jwt_1 = require("@nestjs/jwt");
+let AuthService = exports.AuthService = class AuthService {
+    constructor(userService, jwtService) {
+        this.userService = userService;
+        this.jwtService = jwtService;
     }
-    getHello() {
-        return this.appService.getHello() + process.env.SECRET;
+    async singIn(username, password) {
+        const user = await this.userService.authUser(username, password);
+        if (!user)
+            return;
+        const payload = { id: user.id, name: user.name, lastname: user.lastname, email: user.email };
+        return {
+            access_token: await this.jwtService.signAsync(payload)
+        };
     }
 };
-__decorate([
-    (0, common_1.Get)(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", String)
-], AppController.prototype, "getHello", null);
-exports.AppController = AppController = __decorate([
-    (0, common_1.Controller)(),
-    __metadata("design:paramtypes", [app_service_1.AppService])
-], AppController);
-//# sourceMappingURL=app.controller.js.map
+exports.AuthService = AuthService = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [user_service_1.UserService,
+        jwt_1.JwtService])
+], AuthService);
+//# sourceMappingURL=auth.service.js.map

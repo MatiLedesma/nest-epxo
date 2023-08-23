@@ -3,14 +3,17 @@ import { UserController } from './user.controller';
 import { UserService } from '../../../domain/ports/user/user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../../../domain/model/user/user.entity';
-import { NestApplication } from '@nestjs/core';
+import * as request from 'supertest';
+import { INestApplication } from '@nestjs/common';
+import { UserResponseDto } from './dto/user.response.dto';
 
 describe('UserController', () => {
-  let app: NestApplication;
+  let app: INestApplication;
 
   let controller: UserController;
   let service: UserService;
-  beforeEach(async () => {
+
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserController],
       providers: [UserService],
@@ -22,17 +25,17 @@ describe('UserController', () => {
           username: 'root',
           password: 'root',
           database: 'nest',
-          entities: [__dirname + '/domain/model/**/*.entity{.ts,.js}'],
-          synchronize: true,
+          entities: [User],
+          synchronize: true
         }),
-        TypeOrmModule.forFeature([User]),
-      ],
+        TypeOrmModule.forFeature([User])
+      ]
     }).compile();
 
-    app = module.createNestApplication();
     service = module.get<UserService>(UserService);
     controller = module.get<UserController>(UserController);
-    app.init();
+    app = module.createNestApplication();
+    await app.init();
   });
 
   it('should be defined', () => {
@@ -40,7 +43,15 @@ describe('UserController', () => {
     expect(service).toBeDefined();
   });
 
-  // if('')
+  it("GET `/user` should return 200", () => {
+    return request(app.getHttpServer())
+      .get('/user')
+      .expect(200)
+      .then(({ body }) => {
+        console.log(body);
+        expect(body).toBeInstanceOf(Array<UserResponseDto[]>);
+      });
+  });
 
   afterAll(async () => {
     await app.close();
