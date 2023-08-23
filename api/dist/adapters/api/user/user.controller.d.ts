@@ -1,4 +1,4 @@
-import { UserService } from 'src/domain/ports/user/user.service';
+import { UserService } from '../../../domain/ports/user/user.service';
 import { UserResponseDto } from './dto/user.response.dto';
 import { UserRequestDto } from './dto/user.request.dto';
 export declare class UserController {

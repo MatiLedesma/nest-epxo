@@ -15,11 +15,12 @@ import { User } from './domain/model/user/user.entity';
       username: 'root',
       password: 'root',
       database: 'nest',
-      entities: [__dirname + "/domain/model/**/*.entity{.ts,.js}"],
+      entities: [__dirname + '/domain/model/**/*.entity{.ts,.js}'],
       synchronize: true,
-    }), TypeOrmModule.forFeature([User])
+    }),
+    TypeOrmModule.forFeature([User]),
   ],
   controllers: [AppController, UserController],
   providers: [AppService, UserService],
 })
-export class AppModule { }
+export class AppModule {}

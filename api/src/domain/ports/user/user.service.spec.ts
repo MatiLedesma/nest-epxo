@@ -17,10 +17,11 @@ describe('UserService', () => {
           username: 'root',
           password: 'root',
           database: 'nest',
-          entities: [__dirname + "/domain/model/**/*.entity{.ts,.js}"],
+          entities: [__dirname + '/domain/model/**/*.entity{.ts,.js}'],
           synchronize: true,
-        }), TypeOrmModule.forFeature([User])
-      ]
+        }),
+        TypeOrmModule.forFeature([User]),
+      ],
     }).compile();
 
     service = module.get<UserService>(UserService);

@@ -1,6 +1,6 @@
 import { UserRequestDto } from 'src/adapters/api/user/dto/user.request.dto';
 import { UserResponseDto } from 'src/adapters/api/user/dto/user.response.dto';
-import { User } from 'src/domain/model/user/user.entity';
+import { User } from '../../model/user/user.entity';
 import { Repository } from 'typeorm';
 export declare class UserService {
     private userRepository;

@@ -7,40 +7,47 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
-    constructor(@InjectRepository(User) private userRepository: Repository<User>) { }
+  constructor(
+    @InjectRepository(User) private userRepository: Repository<User>,
+  ) {}
 
-    async getAll(): Promise<UserResponseDto[]> {
-        const responseDto: UserResponseDto[] = [];
-        const response = await this.userRepository.find();
-        response.map((r, i) => { delete r.password; responseDto[i] = r; });
-        return responseDto;
+  async getAll(): Promise<UserResponseDto[]> {
+    const responseDto: UserResponseDto[] = [];
+    const response = await this.userRepository.find();
+    response.map((r, i) => {
+      delete r.password;
+      responseDto[i] = r;
+    });
+    return responseDto;
+  }
+
+  async getById(id: number): Promise<UserResponseDto> {
+    try {
+      const response = await this.userRepository.findOneBy({ id });
+      delete response.password;
+      const responseDto: UserResponseDto = response;
+
+      return responseDto;
+    } catch (e) {
+      throw new HttpException(
+        'Cannot get the requested id',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
+  }
 
-    async getById(id: number): Promise<UserResponseDto> {
-        try {
-            var responseDto: UserResponseDto;
-            const response = await this.userRepository.findOneBy({ id });
-            delete response.password;
-            responseDto = response;
-    
-            return responseDto;
-        } catch(e) {
-            throw new HttpException("Cannot get the requested id", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+  async create(user: UserRequestDto): Promise<UserResponseDto> {
+    const response = await this.userRepository.save(user);
+    delete response.password;
+    const responseDto: UserResponseDto = response;
 
-    async create(user: UserRequestDto): Promise<UserResponseDto> {
-        var responseDto: UserResponseDto;
-        const response = await this.userRepository.save(user);
-        delete response.password;
-        responseDto = response;
+    return responseDto;
+  }
 
-        return responseDto;
-    }
-
-    async delete(id: number): Promise<string> {
-        const result = await this.userRepository.delete(id);
-        if (result.affected === 0) throw new HttpException("The id does not exist", HttpStatus.NOT_FOUND);
-        return "Successfully deleted with id: " + id;
-    }
+  async delete(id: number): Promise<string> {
+    const result = await this.userRepository.delete(id);
+    if (result.affected === 0)
+      throw new HttpException('The id does not exist', HttpStatus.NOT_FOUND);
+    return 'Successfully deleted with id: ' + id;
+  }
 }
