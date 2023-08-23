@@ -5,7 +5,6 @@ import { UserController } from './adapters/api/user/user.controller';
 import { UserService } from './domain/ports/user/user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './domain/model/user/user.entity';
-import { PersonaService } from './domain/ports/persona/persona.service';
 
 @Module({
   imports: [
@@ -15,12 +14,12 @@ import { PersonaService } from './domain/ports/persona/persona.service';
       port: 3306,
       username: 'root',
       password: 'root',
-      database: 'test',
+      database: 'nest',
       entities: [__dirname + "/domain/model/**/*.entity{.ts,.js}"],
       synchronize: true,
     }), TypeOrmModule.forFeature([User])
   ],
   controllers: [AppController, UserController],
-  providers: [AppService, UserService, PersonaService],
+  providers: [AppService, UserService],
 })
 export class AppModule { }
