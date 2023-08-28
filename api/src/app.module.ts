@@ -12,6 +12,8 @@ import { ConfigModule } from '@nestjs/config';
 import { configuration } from './config/global/configuration';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './config/jwt/jwt.strategy';
+import { APP_PIPE } from '@nestjs/core';
+import { ValidationPipe } from './config/validation.pipe';
 
 @Module({
   imports: [
@@ -35,6 +37,9 @@ import { JwtStrategy } from './config/jwt/jwt.strategy';
     PassportModule,
   ],
   controllers: [AppController, UserController, AuthController],
-  providers: [AppService, UserService, AuthService, JwtStrategy],
+  providers: [AppService, UserService, AuthService, JwtStrategy, {
+    provide: APP_PIPE,
+    useClass: ValidationPipe,
+  },],
 })
 export class AppModule {}

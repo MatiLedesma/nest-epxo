@@ -22,32 +22,34 @@ export class UserService {
   }
 
   async authUser(username: string, password: string): Promise<UserResponseDto> {
-    try {
-      const response = await this.userRepository.findOne({
+    
+    const response = await this.userRepository.findOne({
         where: { email: username, password: password },
-      });
-      delete response.password;
-      const responseDto: UserResponseDto = response;
+    });
 
-      return responseDto;
-    } catch (e) {
-      throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
-    }
+    if(!response)
+        throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
+
+    delete response.password;
+    const responseDto: UserResponseDto = response;
+
+    return responseDto;
   }
 
   async getById(id: number): Promise<UserResponseDto> {
-    try {
-      const response = await this.userRepository.findOneBy({ id });
-      delete response.password;
-      const responseDto: UserResponseDto = response;
+    
+    const response = await this.userRepository.findOneBy({ id });
 
-      return responseDto;
-    } catch (e) {
-      throw new HttpException(
-        'Cannot get the requested id',
-        HttpStatus.NOT_FOUND,
-      );
-    }
+    if(!response)
+        throw new HttpException(
+            'User not found',
+            HttpStatus.NOT_FOUND,
+        );
+
+    delete response.password;
+    const responseDto: UserResponseDto = response;
+
+    return responseDto;
   }
 
   async create(user: UserRequestDto): Promise<UserResponseDto> {
@@ -61,7 +63,7 @@ export class UserService {
   async delete(id: number): Promise<string> {
     const result = await this.userRepository.delete(id);
     if (result.affected === 0)
-      throw new HttpException('The id does not exist', HttpStatus.NOT_FOUND);
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     return `Successfully deleted id: ${id}`;
   }
 }

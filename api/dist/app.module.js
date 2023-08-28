@@ -21,6 +21,8 @@ const config_1 = require("@nestjs/config");
 const configuration_1 = require("./config/global/configuration");
 const passport_1 = require("@nestjs/passport");
 const jwt_strategy_1 = require("./config/jwt/jwt.strategy");
+const core_1 = require("@nestjs/core");
+const validation_pipe_1 = require("./config/validation.pipe");
 let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = __decorate([
@@ -46,7 +48,10 @@ exports.AppModule = AppModule = __decorate([
             passport_1.PassportModule,
         ],
         controllers: [app_controller_1.AppController, user_controller_1.UserController, auth_controller_1.AuthController],
-        providers: [app_service_1.AppService, user_service_1.UserService, auth_service_1.AuthService, jwt_strategy_1.JwtStrategy],
+        providers: [app_service_1.AppService, user_service_1.UserService, auth_service_1.AuthService, jwt_strategy_1.JwtStrategy, {
+                provide: core_1.APP_PIPE,
+                useClass: validation_pipe_1.ValidationPipe,
+            },],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

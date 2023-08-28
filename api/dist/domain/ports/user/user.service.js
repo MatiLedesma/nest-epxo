@@ -31,28 +31,22 @@ let UserService = exports.UserService = class UserService {
         return responseDto;
     }
     async authUser(username, password) {
-        try {
-            const response = await this.userRepository.findOne({
-                where: { email: username, password: password },
-            });
-            delete response.password;
-            const responseDto = response;
-            return responseDto;
-        }
-        catch (e) {
+        const response = await this.userRepository.findOne({
+            where: { email: username, password: password },
+        });
+        if (!response)
             throw new common_1.HttpException('Invalid credentials', common_1.HttpStatus.UNAUTHORIZED);
-        }
+        delete response.password;
+        const responseDto = response;
+        return responseDto;
     }
     async getById(id) {
-        try {
-            const response = await this.userRepository.findOneBy({ id });
-            delete response.password;
-            const responseDto = response;
-            return responseDto;
-        }
-        catch (e) {
-            throw new common_1.HttpException('Cannot get the requested id', common_1.HttpStatus.NOT_FOUND);
-        }
+        const response = await this.userRepository.findOneBy({ id });
+        if (!response)
+            throw new common_1.HttpException('User not found', common_1.HttpStatus.NOT_FOUND);
+        delete response.password;
+        const responseDto = response;
+        return responseDto;
     }
     async create(user) {
         const response = await this.userRepository.save(user);
@@ -63,7 +57,7 @@ let UserService = exports.UserService = class UserService {
     async delete(id) {
         const result = await this.userRepository.delete(id);
         if (result.affected === 0)
-            throw new common_1.HttpException('The id does not exist', common_1.HttpStatus.NOT_FOUND);
+            throw new common_1.HttpException('User not found', common_1.HttpStatus.NOT_FOUND);
         return `Successfully deleted id: ${id}`;
     }
 };
