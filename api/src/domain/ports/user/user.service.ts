@@ -9,11 +9,15 @@ import { Repository } from 'typeorm';
 export class UserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async getAll(): Promise<UserResponseDto[]> {
     const responseDto: UserResponseDto[] = [];
     const response = await this.userRepository.find();
+
+    if (!response)
+      throw new HttpException('Cannot get all users', HttpStatus.INTERNAL_SERVER_ERROR);
+
     response.map((r, i) => {
       delete r.password;
       responseDto[i] = r;
@@ -22,32 +26,34 @@ export class UserService {
   }
 
   async authUser(username: string, password: string): Promise<UserResponseDto> {
-    try {
-      const response = await this.userRepository.findOne({
-        where: { email: username, password: password },
-      });
-      delete response.password;
-      const responseDto: UserResponseDto = response;
 
-      return responseDto;
-    } catch (e) {
+    const response = await this.userRepository.findOne({
+      where: { email: username, password: password },
+    });
+
+    if (!response)
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
-    }
+
+    delete response.password;
+    const responseDto: UserResponseDto = response;
+
+    return responseDto;
   }
 
   async getById(id: number): Promise<UserResponseDto> {
-    try {
-      const response = await this.userRepository.findOneBy({ id });
-      delete response.password;
-      const responseDto: UserResponseDto = response;
 
-      return responseDto;
-    } catch (e) {
+    const response = await this.userRepository.findOneBy({ id });
+
+    if (!response)
       throw new HttpException(
-        'Cannot get the requested id',
+        'User not found',
         HttpStatus.NOT_FOUND,
       );
-    }
+
+    delete response.password;
+    const responseDto: UserResponseDto = response;
+
+    return responseDto;
   }
 
   async create(user: UserRequestDto): Promise<UserResponseDto> {
@@ -61,7 +67,7 @@ export class UserService {
   async delete(id: number): Promise<string> {
     const result = await this.userRepository.delete(id);
     if (result.affected === 0)
-      throw new HttpException('The id does not exist', HttpStatus.NOT_FOUND);
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     return `Successfully deleted id: ${id}`;
   }
 }
